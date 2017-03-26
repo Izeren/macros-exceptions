@@ -17,5 +17,7 @@ std::string CException::GetMessage() const {
 
 ___exception_info *___last_exception_info = 0;
 ___exception_info *___temp;
+bool ___was_caught;
+int ___ret_value;
 
 ___exception_info::~___exception_info() {}

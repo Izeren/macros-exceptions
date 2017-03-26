@@ -18,13 +18,12 @@ int DangerousMethod1() {
 int DangerousMethod2() {
     TRY
         DangerousMethod1();
-//    CATCH( MyException1, e )
-//        THROW( new MyException1( e->GetMessage() + ": called from Dangerous2" ))
+    CATCH( MyException1, e )
+        THROW( new MyException1( e->GetMessage() + ": called from Dangerous2" ))
     ETRY
 }
 
 int main() {
-    std::cout << "test\n";
     TRY
         DangerousMethod2();
     CATCH( MyException1, e )
@@ -33,6 +32,10 @@ int main() {
         std::cout << e->GetMessage() << "\n";
     ETRY
 
-
+    TRY
+        THROW( new MyException1( "---" ));
+    CATCH( MyException1, e )
+        std::cout << e->GetMessage() << "\n";
+    ETRY
     return 0;
 }

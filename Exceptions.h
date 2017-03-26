@@ -31,18 +31,20 @@ struct ___exception_info {
 
 extern ___exception_info *___last_exception_info;
 extern ___exception_info *___temp;
+extern bool ___was_caught;
+extern int ___ret_value;
 
 #define TRY \
 ___temp = new ___exception_info();\
 ___temp->previous = ___last_exception_info; \
 ___last_exception_info = ___temp;\
-int ___ret_value = setjmp( ___last_exception_info->buffer );\
-bool ___was_caught = false; \
+___ret_value = setjmp( ___last_exception_info->buffer );\
+___was_caught = false; \
 if ( !___ret_value ) {
 
 #define CATCH( Type, ___exceptionName ) \
 } \
-if ( ___ret_value && std::dynamic_pointer_cast<Type>( ___last_exception_info->exception )) {\
+if ( ___ret_value && ___last_exception_info && std::dynamic_pointer_cast<Type>( ___last_exception_info->exception )) {\
     std::shared_ptr<Type> ___exceptionName = std::dynamic_pointer_cast<Type>( ___last_exception_info->exception ); \
     ___temp = ___last_exception_info; \
     ___last_exception_info = ___last_exception_info->previous; \
@@ -63,4 +65,4 @@ if ( !___was_caught ) {\
     ___last_exception_info = ___last_exception_info->previous; \
     std::shared_ptr<CException> ___exception = ___temp->exception; \
     delete ___temp; \
-    THROW( std::move( ___exception) ) }
+    THROW( ___exception ) }
